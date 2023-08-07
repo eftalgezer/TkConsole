@@ -47,6 +47,7 @@ class ConsoleTest(unittest.TestCase):
         self.text_area = self.console.text_area
         self.entry = self.console.entry
         self.user_input_var = self.console.user_input_var
+        os.environ["DISPLAY"] = ":1.0"
 
     def test_print_output(self):
         """
@@ -109,5 +110,4 @@ class ConsoleTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    os.environ["DISPLAY"] = ":1.0"
     unittest.main()

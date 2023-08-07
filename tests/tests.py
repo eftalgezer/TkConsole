@@ -9,10 +9,8 @@ Usage:
 Run this script directly to execute the unit tests for the TkConsole library.
 """
 
-import os
 import unittest
 from .testers import ConsoleTest
 
 if __name__ == '__main__':
-    os.environ["DISPLAY"]=":1.0"
     unittest.main()
