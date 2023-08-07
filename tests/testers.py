@@ -108,4 +108,5 @@ class ConsoleTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    os.environ["DISPLAY"] = ":1.0"
     unittest.main()
