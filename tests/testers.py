@@ -42,12 +42,12 @@ class ConsoleTest(unittest.TestCase):
         Returns:
             None
         """
+        os.environ["DISPLAY"] = ":1.0"
         root = tk.Tk()
         self.console = Console(root)
         self.text_area = self.console.text_area
         self.entry = self.console.entry
         self.user_input_var = self.console.user_input_var
-        os.environ["DISPLAY"] = ":1.0"
 
     def test_print_output(self):
         """
