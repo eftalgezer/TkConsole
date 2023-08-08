@@ -53,7 +53,9 @@ jobs:
            sed -i '' "s/Python //g" py_ver
            export PY_VER="$( cat py_ver )"
            brew install pyenv --head
-           pyenv install --patch $PY_VER < <(curl -sSL https://github.com/python/cpython/commit/720bb456dc711b0776bae837d1f9a0b10c28ddf2.patch\?full_index\=1)
+           sudo rm -rf /Library/Developer/CommandLineTools
+           sudo shutdown -r now
+           xcode-select --install
            pyenv uninstall $PY_VER
            env \
            PATH="$(brew --prefix tcl-tk)/bin:$PATH" \
