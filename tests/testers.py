@@ -11,7 +11,6 @@ Usage:
     Run this module to execute the unit tests for the Console class.
 """
 
-
 import os
 import unittest
 from unittest.mock import patch
@@ -31,7 +30,9 @@ class ConsoleTest(unittest.TestCase):
         test_input(self): Test the input method by mocking the built-in input function.
         test_copy_text(self): Test the copy_text method's functionality.
         test_paste_text(self): Test the paste_text method's functionality.
+        tearDown(self): Clean up the test environment after each test.
     """
+
     def setUp(self):
         """
         Set up the test environment.
@@ -109,6 +110,19 @@ class ConsoleTest(unittest.TestCase):
         self.console.parent.clipboard_append(clipboard_text)
         self.console.paste_text()
         self.assertEqual(self.entry.get(), clipboard_text)
+
+    def tearDown(self):
+        """
+        Clean up the test environment after each test.
+
+        This method ensures that the Tkinter root window is destroyed after each test case,
+        preventing any graphical artifacts or interference between test cases.
+
+        Returns:
+            None
+        """
+        if self.console:
+            self.console.parent.destroy()
 
 
 if __name__ == '__main__':
