@@ -9,6 +9,7 @@ Classes:
 """
 
 import os
+from subprocess import Popen
 import unittest
 from unittest.mock import patch
 import tkinter as tk
@@ -45,7 +46,7 @@ class ConsoleTester(unittest.TestCase):
             None
         """
         if os.name != "nt" and os.getenv("GITHUB_ACTIONS"):
-            os.system('/usr/bin/Xvfb :1 -screen 0 1600x1200x16  &')
+            Popen(["/usr/bin/Xvfb", ":1", "-screen", "0", "1600x1200x16", "&"])
             os.environ["DISPLAY"] = ":1.0"
         self.root = FakeTk()
         self.console = Console(self.root)
