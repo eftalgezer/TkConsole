@@ -5,59 +5,33 @@ This module contains unit tests for the TkConsole package. It tests the function
 and its methods using the unittest framework and mocking.
 
 Classes:
-    ConsoleTest (class): Unit tests for the Console class.
-
-Usage:
-    Run this module to execute the unit tests for the Console class.
+    ConsoleTester (class): Unit tests for the Console class.
 """
 
 import os
 import unittest
 from unittest.mock import patch
 import tkinter as tk
-from tkinter import scrolledtext
 from TkConsole import Console
+from .patches import FakeTk, FakeScrolledText
 
 
-class FakeTk(tk.Tk):
-    def __init__(self):
-        super(FakeTk, self).__init__()
-
-    def mainloop(self, **kwargs):
-        pass
-
-    class Entry(tk.Entry):
-        def __init__(self):
-            super(FakeTk.Entry, self).__init__()
-
-        def mainloop(self, n: int = ...) -> None:
-            pass
-
-
-class FakeScrolledText(scrolledtext.ScrolledText):
-    def __init__(self, master=None, **kw):
-        super(FakeScrolledText, self).__init__()
-
-    def mainloop(self, n: int = ...) -> None:
-        pass
-
-    def winfo_height(self) -> int:
-        return 500
-
-
-class ConsoleTest(unittest.TestCase):
+class ConsoleTester(unittest.TestCase):
     """
-    ConsoleTest class
+    ConsoleTester class
 
     This class contains unit tests for the Console class of the TkConsole package.
 
     Methods:
         setUp(self): Set up the test environment.
         tearDown(self): Clean up the test environment after each test.
-        test_print_output(self): Test the print method's output to the text area.
-        test_input(self): Test the input method by mocking the built-in input function.
-        test_copy_text(self): Test the copy_text method's functionality.
-        test_paste_text(self): Test the paste_text method's functionality.
+        print_tester(self, prints=None, expected_output=None): Tester function for the print method's output to the text
+        area.
+        input_tester(self, prompt=None, return_value=None): Tester function for the input method by mocking the built-in
+        input function.
+        copy_text_tester(self, text=None, text_to_copy=None, tag_start=None, tag_end=None): Tester function for the
+        copy_text method's functionality.
+        paste_text_tester(self, clipboard_text): Tester function for the paste_text method's functionality.
     """
 
     def setUp(self):
@@ -97,9 +71,9 @@ class ConsoleTest(unittest.TestCase):
         if self.root:
             self.root.destroy()
 
-    def test_print_output(self):
+    def print_tester(self, prints=None, expected_output=None):
         """
-        Test the print method's output to the text area.
+        Tester function for the print method's output to the text area.
 
         This method tests whether the print method correctly inserts text into the text area.
 
@@ -107,17 +81,19 @@ class ConsoleTest(unittest.TestCase):
             None
         """
         self.setUp()
-        expected_output = "Hello, world! This terminal-like library is great.\n"
-        self.console.print("Hello, world!", end=" ")
-        self.console.print("This terminal-like library is great.")
+        for item in prints:
+            if item[1]:
+                self.console.print(item[0], end=item[1])
+            else:
+                self.console.print(item[0])
         self.assertEqual(self.text_area.get("1.0", tk.END), expected_output)
         self.root.update_idletasks()
         self.tearDown()
         self.root = None
 
-    def test_input(self):
+    def input_tester(self, prompt=None, return_value=None):
         """
-        Test the input method by mocking the built-in input function.
+        Tester function for the input method by mocking the built-in input function.
 
         This method uses the unittest.mock.patch decorator to mock the built-in input function,
         allowing for controlled input during testing.
@@ -126,16 +102,16 @@ class ConsoleTest(unittest.TestCase):
             None
         """
         self.setUp()
-        with patch("builtins.input", return_value="42"):
-            user_input = self.console.input("Enter a number: ")
-            self.assertEqual(user_input, "42")
+        with patch("builtins.input", return_value=return_value):
+            user_input = self.console.input(prompt)
+            self.assertEqual(user_input, return_value)
         self.root.update_idletasks()
         self.tearDown()
         self.root = None
 
-    def test_copy_text(self):
+    def copy_text_tester(self, text=None, text_to_copy=None, tag_start=None, tag_end=None):
         """
-        Test the copy_text method's functionality.
+        Tester function for the copy_text method's functionality.
 
         This method tests whether the copy_text method correctly copies selected text from the text area to the
         clipboard.
@@ -144,18 +120,18 @@ class ConsoleTest(unittest.TestCase):
             None
         """
         self.setUp()
-        self.text_area.insert("1.0", "Copy this text.")
-        self.text_area.tag_add(tk.SEL, "1.0", "1.10")
+        self.text_area.insert(tag_start, text)
+        self.text_area.tag_add(tk.SEL, tag_start, tag_end)
         self.console.copy_text()
         clipboard_text = self.console.parent.clipboard_get()
-        self.assertEqual(clipboard_text, "Copy this ")
+        self.assertEqual(clipboard_text, text_to_copy)
         self.root.update_idletasks()
         self.tearDown()
         self.root = None
 
-    def test_paste_text(self):
+    def paste_text_tester(self, clipboard_text):
         """
-        Test the paste_text method's functionality.
+        Tester function for the paste_text method's functionality.
 
         This method tests whether the paste_text method correctly pastes text from the clipboard to the entry widget.
 
@@ -163,7 +139,6 @@ class ConsoleTest(unittest.TestCase):
             None
         """
         self.setUp()
-        clipboard_text = "Pasted text."
         self.console.parent.clipboard_clear()
         self.console.parent.clipboard_append(clipboard_text)
         self.console.input()
@@ -172,7 +147,3 @@ class ConsoleTest(unittest.TestCase):
         self.root.update_idletasks()
         self.tearDown()
         self.root = None
-
-
-if __name__ == '__main__':
-    unittest.main()

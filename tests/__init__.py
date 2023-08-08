@@ -5,3 +5,4 @@ This package contains unit tests for the TkConsole library. The tests are organi
 different aspects of the Console class functionality. These tests ensure that the library's features are working
 correctly and can be used to validate the behavior of the TkConsole module.
 """
+import pytest
