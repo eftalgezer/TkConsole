@@ -26,15 +26,39 @@ class Console(tk.Frame):
         font (tkFont.Font): The font used for the console's text.
         background (str): The background color of the console.
         foreground (str): The foreground color (text color) of the console.
-        user_input_var (tk.StringVar): A variable to hold user input.
         text_area (scrolledtext.ScrolledText): The text area of the console for displaying output.
         entry (tk.Entry): The entry field for user input.
-        entry_x (int): X-coordinate of the entry field.
-        text_cursor_position (int): The position of the text cursor in the entry field.
-        yview (float): The vertical scroll position of the text area.
-        index (float): The current line index of the text cursor in the text area.
         edit_menu (tk.Menu): The context menu for copy/paste actions.
+        helpers (Helpers): An inner class containing helper attributes and methods.
     """
+    class Helpers:
+        """
+        A helper class containing various attributes for assisting the Console class.
+
+        Attributes:
+            user_input_var (tk.StringVar or None): A variable to hold user input.
+            entry_x (int or None): X-coordinate of the entry field.
+            text_cursor_position (int or None): The position of the text cursor in the entry field.
+            yview (float or None): The vertical scroll position of the text area.
+            index (float or None): The current line index of the text cursor in the text area.
+        """
+        def __init__(self):
+            """
+            Initialize the Helper attributes.
+
+            Attributes:
+                user_input_var (tk.StringVar or None): A variable to hold user input.
+                entry_x (int or None): X-coordinate of the entry field.
+                text_cursor_position (int or None): The position of the text cursor in the entry field.
+                yview (float or None): The vertical scroll position of the text area.
+                index (float or None): The current line index of the text cursor in the text area.
+            """
+            self.user_input_var = None
+            self.entry_x = None
+            self.text_cursor_position = None
+            self.yview = None
+            self.index = None
+
     def __init__(self, parent_, **kwargs):
         """
         Initialize the Console widget with the provided parent Tkinter window and appearance settings.
@@ -42,13 +66,21 @@ class Console(tk.Frame):
         Args:
             parent_ (tk.Tk): The parent Tkinter window.
             **kwargs: Additional keyword arguments for configuring the console's appearance.
+
+        Attributes:
+            font (tkFont.Font): The font used for the console's text.
+            background (str): The background color of the console.
+            foreground (str): The foreground color (text color) of the console.
+            text_area (scrolledtext.ScrolledText): The text area of the console for displaying output.
+            entry (tk.Entry): The entry field for user input.
+            edit_menu (tk.Menu): The context menu for copy/paste actions.
+            helpers (Helpers): An inner class containing helper attributes and methods.
         """
         tk.Frame.__init__(self, parent_)
         self.parent = parent_
         self.font = kwargs.get("font", tkFont.Font(family="Monospace", size=10))
         self.background = kwargs.get("background", "#232627")
         self.foreground = kwargs.get("foreground", "#FFFFFF")
-        self.user_input_var = None
         self.text_area = scrolledtext.ScrolledText(
             self.parent, wrap=tk.WORD, font=self.font, background=self.background, foreground=self.foreground, padx=0,
             pady=0, borderwidth=0, border=0.0, insertborderwidth=0, selectborderwidth=0
@@ -56,10 +88,6 @@ class Console(tk.Frame):
         self.text_area.pack(expand=True, fill="both", padx=0, pady=0, ipady=0, ipadx=0)
         self.text_area.place(relwidth=1, relheight=1)
         self.entry = None
-        self.entry_x = None
-        self.text_cursor_position = None
-        self.yview = None
-        self.index = None
         self.edit_menu = tk.Menu(self.parent, tearoff=0)
         self.parent.bind("<Button-3>", self.show_edit_menu)
         self.parent.bind("<Control-Shift-c>", self.copy_text)
@@ -71,6 +99,7 @@ class Console(tk.Frame):
         self.parent.bind("<End>", self.go_to_end)
         self.parent.bind("<Prior>", self.page_up)
         self.parent.bind("<Next>", self.page_down)
+        self.helpers = self.Helpers()
 
     def go_to_home(self, event):
         """Scrolls the text area to the beginning."""
@@ -95,19 +124,19 @@ class Console(tk.Frame):
         """
         self.parent.update_idletasks()
         if self.entry:
-            if not self.entry_x:
-                self.entry_x = self.entry.winfo_x()
+            if not self.helpers.entry_x:
+                self.helpers.entry_x = self.entry.winfo_x()
             self.entry.configure(
-                width=(self.text_area.winfo_width() - self.entry_x - 10) // self.font.measure("0")
+                width=(self.text_area.winfo_width() - self.helpers.entry_x - 10) // self.font.measure("0")
             )
-        if not self.yview and not self.index:
-            self.yview = round(self.text_area.yview()[1], 1)
-            self.index = float(self.text_area.index(tk.CURRENT)) // (
+        if not self.helpers.yview and not self.helpers.index:
+            self.helpers.yview = round(self.text_area.yview()[1], 1)
+            self.helpers.index = float(self.text_area.index(tk.CURRENT)) // (
                     self.text_area.winfo_height() // self.font.measure("0"))
-        if self.yview < self.index or self.yview == 1.0:
+        if self.helpers.yview < self.helpers.index or self.helpers.yview == 1.0:
             self.text_area.see(tk.END)
-        self.yview = None
-        self.index = None
+        self.helpers.yview = None
+        self.helpers.index = None
 
     def write_output(self, output):
         """
@@ -186,7 +215,7 @@ class Console(tk.Frame):
             """
             Callback function to handle the 'Return' or 'Enter' key press event.
             """
-            self.print(self.user_input_var.get())
+            self.print(self.helpers.user_input_var.get())
             self.entry.destroy()
             self.parent.unbind("<Button-1>")
             self.entry = None
@@ -195,15 +224,15 @@ class Console(tk.Frame):
             """
             Prevent text cursor movement in the entry field.
             """
-            self.entry.icursor(self.text_cursor_position)
+            self.entry.icursor(self.helpers.text_cursor_position)
 
         if prompt:
             self.print(prompt, end="")
         self.parent.update_idletasks()
         yview = round(self.text_area.yview()[1], 1)
         index = float(self.text_area.index(tk.CURRENT)) // (self.text_area.winfo_height() // self.font.measure("0"))
-        self.user_input_var = tk.StringVar()
-        self.entry = tk.Entry(self.text_area, textvariable=self.user_input_var, font=self.font, relief=tk.FLAT,
+        self.helpers.user_input_var = tk.StringVar()
+        self.entry = tk.Entry(self.text_area, textvariable=self.helpers.user_input_var, font=self.font, relief=tk.FLAT,
                               borderwidth=0, border=0.0, insertborderwidth=0, selectborderwidth=0, highlightthickness=0,
                               background=self.background, foreground=self.foreground, insertbackground=self.foreground,
                               insertwidth=1.5 * self.font.measure("0"), insertofftime=0
@@ -213,11 +242,11 @@ class Console(tk.Frame):
         if yview < index or yview == 1.0:
             self.text_area.see(tk.END)
         self.adjust_on_configure(None)
-        self.user_input_var.trace("w", lambda name, index, mode: callback())
+        self.helpers.user_input_var.trace("w", lambda name, index, mode: callback())
         self.entry.bind("<Return>", on_enter)
         self.entry.bind("<KP_Enter>", on_enter)
         self.parent.bind("<Button-1>", prevent_text_cursor_movement)
         self.entry.focus_set()
         self.parent.wait_window(self.entry)
-        user_input_ = self.user_input_var.get()
+        user_input_ = self.helpers.user_input_var.get()
         return user_input_

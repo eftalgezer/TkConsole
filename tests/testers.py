@@ -57,7 +57,7 @@ class ConsoleTester(unittest.TestCase):
         )
         self.text_area = self.console.text_area
         self.entry = self.console.entry
-        self.user_input_var = self.console.user_input_var
+        self.user_input_var = self.console.helpers.user_input_var
 
     def tearDown(self):
         """
