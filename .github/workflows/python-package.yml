@@ -44,9 +44,7 @@ jobs:
       if: "startsWith(matrix.os, 'macos')"
       run: |
            brew update
-           brew install pyenv
            brew install tcl-tk
-           pyenv install 3.11.4
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
