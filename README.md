@@ -13,6 +13,10 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/9f587291fa574f638dba71241657902b)](https://app.codacy.com/gh/eftalgezer/TkConsole/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![PyPI license](https://img.shields.io/pypi/l/TkConsole.svg)](https://pypi.python.org/pypi/TkConsole/)
 
+<p align="center">
+![TkConsole Screenshot](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjQ5AhNaTawdxrkYtJWltKRA_wgHmPuJ4YavwVNsGOwfrlaXxxFDbHnQPReGFyb9Vu8jEjONXy8YFjz-2EYdH5LM_1tLo5HwKqCDh3C7wtab9aRyURy_OlOKWvZ4Y9-L3NHh0Hr8pWzY8z-3mN-Kwxrt_CRXyKwq7nKvuYM0fKn9wTig6uap8R3SzC5y2KU/s1600/tkconsole_example.png)
+</p>
+
 TkConsole is a Python library that provides a customizable terminal-like console widget using the Tkinter GUI framework.
 
 ## Installation
@@ -20,8 +24,18 @@ TkConsole is a Python library that provides a customizable terminal-like console
 TkConsole can be installed using pip:
 
 ```bash
-pip install TkConsole
+pip install SIESTAstepper
+
+# to make sure you have the latest version
+pip install -U SIESTAstepper
+
+# latest available code base
+pip install -U git+https://github.com/eftalgezer/TkConsole.git
 ```
+
+## Tutorial
+
+[Building an interactive console interface with TkConsole](https://beyondthearistotelian.blogspot.com/2023/08/building-interactive-console-interface.html)
 
 ## Usage
 
