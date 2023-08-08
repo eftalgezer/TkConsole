@@ -47,6 +47,7 @@ class ConsoleTest(unittest.TestCase):
             os.system('Xvfb :1 -screen 0 1600x1200x16  &')
         os.environ["DISPLAY"] = ":1.0"
         root = tk.Tk()
+        root.configure(width=500, height=500)
         self.console = Console(root)
         self.text_area = self.console.text_area
         self.entry = self.console.entry
