@@ -30,7 +30,6 @@ class Console(tk.Frame):
         text_area (scrolledtext.ScrolledText): The text area of the console for displaying output.
         entry (tk.Entry): The entry field for user input.
         entry_x (int): X-coordinate of the entry field.
-        entry_modified: Unused attribute.
         text_cursor_position (int): The position of the text cursor in the entry field.
         yview (float): The vertical scroll position of the text area.
         index (float): The current line index of the text cursor in the text area.
@@ -182,7 +181,6 @@ class Console(tk.Frame):
             Callback function to track the text cursor position in the entry field.
             """
             self.text_cursor_position = self.entry.index(tk.INSERT)
-            print(self.text_cursor_position)
 
         def on_enter(event=None):
             """

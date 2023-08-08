@@ -43,14 +43,11 @@ class ConsoleTest(unittest.TestCase):
         Returns:
             None
         """
-        if os.name != "nt":
+        if os.name != "nt" and os.getenv("GITHUB_ACTIONS"):
             os.system('Xvfb :1 -screen 0 1600x1200x16  &')
-        os.environ["DISPLAY"] = ":1.0"
+            os.environ["DISPLAY"] = ":1.0"
         root = tk.Tk()
-        root.configure(width=500, height=500)
         self.console = Console(root)
-        self.console.pack(side=tk.TOP, fill=tk.BOTH, padx=0, pady=0, ipady=0, ipadx=0, expand=True)
-        self.console.place(relwidth=1, relheight=1)
         self.text_area = self.console.text_area
         self.entry = self.console.entry
         self.user_input_var = self.console.user_input_var

@@ -45,7 +45,7 @@ setup(
     keywords="TkConsole, custom console, Tkinter console, terminal-like interface, Python GUI, text input, "
              "text output, copy and paste, scrolledtext",
     packages=["TkConsole"],
-    install_requires=["tkinter"],
+    install_requires=[],
     project_urls={
         "Bug Reports": "https://github.com/eftalgezer/TkConsole/issues",
         "Source": "https://github.com/eftalgezer/TkConsole/",
