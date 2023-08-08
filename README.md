@@ -3,7 +3,7 @@
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/TkConsole.svg)](https://pypi.python.org/pypi/TkConsole/)
 [![Python package](https://github.com/eftalgezer/TkConsole/actions/workflows/python-package.yml/badge.svg)](https://github.com/eftalgezer/TkConsole/actions/workflows/python-package.yml)
 [![codecov](https://codecov.io/gh/eftalgezer/TkConsole/branch/main/graph/badge.svg?token=Q9TJFIN1U1)](https://codecov.io/gh/eftalgezer/TkConsole)
-[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/3bec71a96f374f24b26b077619350f30)](https://www.codacy.com/gh/eftalgezer/TkConsole/dashboard?utm_source=github.com&utm_medium=referral&utm_content=eftalgezer/TkConsole&utm_campaign=Badge_Coverage)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/9f587291fa574f638dba71241657902b)](https://app.codacy.com/gh/eftalgezer/TkConsole/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 [![PyPI download month](https://img.shields.io/pypi/dm/TkConsole.svg)](https://pypi.python.org/pypi/TkConsole/)
 [![PyPI download week](https://img.shields.io/pypi/dw/TkConsole.svg)](https://pypi.python.org/pypi/TkConsole/)
 [![PyPI download day](https://img.shields.io/pypi/dd/TkConsole.svg)](https://pypi.python.org/pypi/TkConsole/)
