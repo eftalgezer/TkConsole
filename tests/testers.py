@@ -109,7 +109,7 @@ class ConsoleTest(unittest.TestCase):
         """
         self.setUp()
         self.text_area.insert("1.0", "Copy this text.")
-        self.text_area.tag_add(tk.SEL, "1.0", "1.11")
+        self.text_area.tag_add(tk.SEL, "1.0", "1.10")
         self.console.copy_text()
         clipboard_text = self.console.parent.clipboard_get()
         self.assertEqual(clipboard_text, "Copy this ")
@@ -128,6 +128,7 @@ class ConsoleTest(unittest.TestCase):
         clipboard_text = "Pasted text."
         self.console.parent.clipboard_clear()
         self.console.parent.clipboard_append(clipboard_text)
+        self.console.input()
         self.console.paste_text()
         self.assertEqual(self.entry.get(), clipboard_text)
         self.tearDown()
