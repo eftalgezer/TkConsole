@@ -3,13 +3,12 @@ Setup file for TkConsole
 """
 import os
 from setuptools import setup
-import io
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 LONG_DESCRIPTION = None
 
-with io.open(os.path.join(HERE, "README.md"), "r", encoding="utf-8") as readme:
+with open(os.path.join(HERE, "README.md"), "r", encoding="utf-8") as readme:
     LONG_DESCRIPTION = readme.read()
 
 setup(

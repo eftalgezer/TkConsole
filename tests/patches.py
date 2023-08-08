@@ -33,19 +33,18 @@ class FakeTk(tk.Tk):
         Returns:
             None
         """
-        super(FakeTk, self).__init__()
+        super().__init__()
 
-    def mainloop(self, **kwargs):
+    def mainloop(self, n: int = ...) -> None:
         """
         Mocks the mainloop method of Tkinter's root window.
 
         Args:
-            **kwargs: Additional keyword arguments (ignored).
+            n (int): Number of iterations (ignored).
 
         Returns:
             None
         """
-        pass
 
     class Entry(tk.Entry):
         """
@@ -63,7 +62,7 @@ class FakeTk(tk.Tk):
             Returns:
                 None
             """
-            super(FakeTk.Entry, self).__init__()
+            super().__init__()
 
         def mainloop(self, n: int = ...) -> None:
             """
@@ -75,7 +74,6 @@ class FakeTk(tk.Tk):
             Returns:
                 None
             """
-            pass
 
 
 class FakeScrolledText(scrolledtext.ScrolledText):
@@ -99,7 +97,7 @@ class FakeScrolledText(scrolledtext.ScrolledText):
         Returns:
             None
         """
-        super(FakeScrolledText, self).__init__()
+        super().__init__()
 
     def mainloop(self, n: int = ...) -> None:
         """
@@ -111,7 +109,6 @@ class FakeScrolledText(scrolledtext.ScrolledText):
         Returns:
             None
         """
-        pass
 
     def winfo_height(self) -> int:
         """

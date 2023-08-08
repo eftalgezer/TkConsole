@@ -39,8 +39,8 @@ def test_by_threads():
         None
     """
     funcs = [func for func in dir(".tests") if func.startswith("test_")]
-    q = queue.Queue()
-    threads = [threading.Thread(target=thread, args=(func, q)) for func in funcs]
+    que = queue.Queue()
+    threads = [threading.Thread(target=thread, args=(func, que)) for func in funcs]
     for th in threads:
         th.daemon = True
         th.start()
