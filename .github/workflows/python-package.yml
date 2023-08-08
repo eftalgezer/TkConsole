@@ -52,7 +52,7 @@ jobs:
            python --version >> py_ver
            sed -i '' "s/Python //g" py_ver
            export PY_VER="$( cat py_ver )"
-           brew install pyenv
+           brew install pyenv --head
            pyenv uninstall $PY_VER
            env \
            PATH="$(brew --prefix tcl-tk)/bin:$PATH" \
