@@ -46,8 +46,8 @@ class ConsoleTester(unittest.TestCase):
             None
         """
         if os.name != "nt" and os.getenv("GITHUB_ACTIONS"):
-            Popen(["/usr/bin/Xvfb", ":1", "-screen", "0", "1600x1200x16", "&"])
-            os.environ["DISPLAY"] = ":1.0"
+            with Popen(["/usr/bin/Xvfb", ":1", "-screen", "0", "1600x1200x16", "&"]):
+                os.environ["DISPLAY"] = ":1.0"
         self.root = FakeTk()
         self.console = Console(self.root)
         self.console.text_area = FakeScrolledText(
