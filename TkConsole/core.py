@@ -9,6 +9,7 @@ Classes:
     Console: A class representing the custom console widget.
 """
 
+from typing import Union
 import dataclasses
 import tkinter as tk
 import tkinter.font as tkFont
@@ -45,11 +46,11 @@ class Console(tk.Frame):
             yview (float or None): The vertical scroll position of the text area.
             index (float or None): The current line index of the text cursor in the text area.
         """
-        user_input_var: (str, None) = None
-        entry_x: (int, None) = None
-        text_cursor_position: (int, None) = None
-        yview: (float, None) = None
-        index: (float, None) = None
+        user_input_var: Union[tk.StringVar, None] = None
+        entry_x: Union[int, None] = None
+        text_cursor_position: Union[int, None] = None
+        yview: Union[float, None] = None
+        index: Union[float, None] = None
 
     def __init__(self, parent_, **kwargs):
         """
