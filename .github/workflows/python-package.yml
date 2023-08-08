@@ -40,8 +40,8 @@ jobs:
         sudo apt-get update
         sudo apt-get install python3-tk
         sudo apt-get install -y xvfb
-    - name: Install dependencies (macOS)
-      if: "startsWith(matrix.os, 'macos')"
+    - name: Install dependencies (macOS, except with Python 3.11)
+      if: "startsWith(matrix.os, 'macos') && !(matrix.python-version == '3.11')"
       run: |
            brew update
            brew install tcl-tk
