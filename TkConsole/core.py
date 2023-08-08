@@ -9,6 +9,7 @@ Classes:
     Console: A class representing the custom console widget.
 """
 
+import dataclasses
 import tkinter as tk
 import tkinter.font as tkFont
 from tkinter import scrolledtext
@@ -31,6 +32,8 @@ class Console(tk.Frame):
         edit_menu (tk.Menu): The context menu for copy/paste actions.
         helpers (Helpers): An inner class containing helper attributes and methods.
     """
+
+    @dataclasses.dataclass
     class Helpers:
         """
         A helper class containing various attributes for assisting the Console class.
@@ -42,22 +45,11 @@ class Console(tk.Frame):
             yview (float or None): The vertical scroll position of the text area.
             index (float or None): The current line index of the text cursor in the text area.
         """
-        def __init__(self):
-            """
-            Initialize the Helper attributes.
-
-            Attributes:
-                user_input_var (tk.StringVar or None): A variable to hold user input.
-                entry_x (int or None): X-coordinate of the entry field.
-                text_cursor_position (int or None): The position of the text cursor in the entry field.
-                yview (float or None): The vertical scroll position of the text area.
-                index (float or None): The current line index of the text cursor in the text area.
-            """
-            self.user_input_var = None
-            self.entry_x = None
-            self.text_cursor_position = None
-            self.yview = None
-            self.index = None
+        user_input_var: (str, None) = None
+        entry_x: (int, None) = None
+        text_cursor_position: (int, None) = None
+        yview: (float, None) = None
+        index: (float, None) = None
 
     def __init__(self, parent_, **kwargs):
         """
@@ -205,6 +197,7 @@ class Console(tk.Frame):
         Returns:
             str: The user-entered text.
         """
+
         def callback():
             """
             Callback function to track the text cursor position in the entry field.
