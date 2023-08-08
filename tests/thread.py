@@ -11,6 +11,7 @@ Functions:
 
 import queue
 import threading
+from .tests import test_print, test_input, test_copy_text, test_paste_text
 
 
 def thread(func):
@@ -23,7 +24,8 @@ def thread(func):
     Returns:
         None
     """
-    eval(f"{func}()")
+    func = globals()[func]
+    func()
 
 
 def test_by_threads():
