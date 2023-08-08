@@ -51,7 +51,7 @@ jobs:
            export PKG_CONFIG_PATH="/usr/local/opt/tcl-tk/lib/pkgconfig"
            python --version >> py_ver
            sed -i '' "s/Python //g" py_ver
-           export PY_VER = $( cat py_ver )
+           export PY_VER=$( cat py_ver )
            brew install pyenv
            pyenv uninstall $PY_VER
            env \
