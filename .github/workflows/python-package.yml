@@ -53,7 +53,8 @@ jobs:
            python --version >> py_ver
            sed -i '' "s/Python //g" py_ver
            export PY_VER="$( cat py_ver )"
-           CC="$(brew --prefix gcc)/bin/gcc-11" PYTHON_BUILD_HOMEBREW_OPENSSL_FORMULA="openssl@3" pyenv uninstall $PY_VER
+           pyenv local $PY_VER
+           pyenv uninstall $PY_VER
            env \
            PATH="$(brew --prefix tcl-tk)/bin:$PATH" \
            LDFLAGS="-L$(brew --prefix tcl-tk)/lib" \
@@ -61,8 +62,8 @@ jobs:
            PKG_CONFIG_PATH="$(brew --prefix tcl-tk)/lib/pkgconfig" \
            CFLAGS="-I$(brew --prefix tcl-tk)/include" \
            PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I$(brew --prefix tcl-tk)/include' --with-tcltk-libs='-L$(brew --prefix tcl-tk)/lib -ltcl8.6 -ltk8.6'" \
-           CC="$(brew --prefix gcc)/bin/gcc-11" PYTHON_BUILD_HOMEBREW_OPENSSL_FORMULA="openssl@3" pyenv install $PY_VER
-           CC="$(brew --prefix gcc)/bin/gcc-11" PYTHON_BUILD_HOMEBREW_OPENSSL_FORMULA="openssl@3" pyenv global $PY_VER
+           pyenv install $PY_VER
+           pyenv global $PY_VER
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
