@@ -202,7 +202,7 @@ class Console(tk.Frame):
             """
             Callback function to track the text cursor position in the entry field.
             """
-            self.text_cursor_position = self.entry.index(tk.INSERT)
+            self.helpers.text_cursor_position = self.entry.index(tk.INSERT)
 
         def on_enter(event=None):
             """
