@@ -44,18 +44,18 @@ jobs:
       if: "startsWith(matrix.os, 'macos')"
       run: |
            brew update
+           sudo rm -rf /Library/Developer/CommandLineTools
+           sudo shutdown -r now
+           xcode-select --install
            brew install tcl-tk
            echo 'export PATH="/usr/local/opt/tcl-tk/bin:$PATH"' >> ~/.zshrc
            export LDFLAGS="-L/usr/local/opt/tcl-tk/lib"
            export CPPFLAGS="-I/usr/local/opt/tcl-tk/include"
            export PKG_CONFIG_PATH="/usr/local/opt/tcl-tk/lib/pkgconfig"
+           brew install pyenv --head
            python --version >> py_ver
            sed -i '' "s/Python //g" py_ver
            export PY_VER="$( cat py_ver )"
-           brew install pyenv --head
-           sudo rm -rf /Library/Developer/CommandLineTools
-           sudo shutdown -r now
-           xcode-select --install
            pyenv uninstall $PY_VER
            env \
            PATH="$(brew --prefix tcl-tk)/bin:$PATH" \
