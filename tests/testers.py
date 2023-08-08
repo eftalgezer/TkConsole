@@ -46,8 +46,8 @@ class ConsoleTest(unittest.TestCase):
         if os.name != "nt":
             os.system('Xvfb :1 -screen 0 1600x1200x16  &')
         os.environ["DISPLAY"] = ":1.0"
-        root = tk.Tk()
-        self.console = Console(root)
+        self.root = tk.Tk()
+        self.console = Console(self.root)
         self.text_area = self.console.text_area
         self.entry = self.console.entry
         self.user_input_var = self.console.user_input_var
@@ -79,6 +79,7 @@ class ConsoleTest(unittest.TestCase):
         self.console.print("Hello, world!", end=" ")
         self.console.print("This terminal-like library is great.")
         self.assertEqual(self.text_area.get("1.0", tk.END), expected_output)
+        self.root.dooneevent()
         self.tearDown()
 
     def test_input(self):
@@ -95,6 +96,7 @@ class ConsoleTest(unittest.TestCase):
         with patch("builtins.input", return_value="42"):
             user_input = self.console.input("Enter a number: ")
             self.assertEqual(user_input, "42")
+        self.root.dooneevent()
         self.tearDown()
 
     def test_copy_text(self):
@@ -113,6 +115,7 @@ class ConsoleTest(unittest.TestCase):
         self.console.copy_text()
         clipboard_text = self.console.parent.clipboard_get()
         self.assertEqual(clipboard_text, "Copy this ")
+        self.root.dooneevent()
         self.tearDown()
 
     def test_paste_text(self):
@@ -131,6 +134,7 @@ class ConsoleTest(unittest.TestCase):
         self.console.input()
         self.console.paste_text()
         self.assertEqual(self.entry.get(), clipboard_text)
+        self.root.dooneevent()
         self.tearDown()
 
 
