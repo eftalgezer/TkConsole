@@ -80,7 +80,6 @@ class ConsoleTest(unittest.TestCase):
         self.console.print("This terminal-like library is great.")
         self.assertEqual(self.text_area.get("1.0", tk.END), expected_output)
         self.root.dooneevent()
-        self.tearDown()
 
     def test_input(self):
         """
@@ -97,7 +96,6 @@ class ConsoleTest(unittest.TestCase):
             user_input = self.console.input("Enter a number: ")
             self.assertEqual(user_input, "42")
         self.root.dooneevent()
-        self.tearDown()
 
     def test_copy_text(self):
         """
@@ -116,7 +114,6 @@ class ConsoleTest(unittest.TestCase):
         clipboard_text = self.console.parent.clipboard_get()
         self.assertEqual(clipboard_text, "Copy this ")
         self.root.dooneevent()
-        self.tearDown()
 
     def test_paste_text(self):
         """
@@ -135,7 +132,6 @@ class ConsoleTest(unittest.TestCase):
         self.console.paste_text()
         self.assertEqual(self.entry.get(), clipboard_text)
         self.root.dooneevent()
-        self.tearDown()
 
 
 if __name__ == '__main__':
