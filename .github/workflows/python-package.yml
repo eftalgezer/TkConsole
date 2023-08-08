@@ -44,9 +44,6 @@ jobs:
       if: "startsWith(matrix.os, 'macos')"
       run: |
            brew update
-           sudo rm -rf /Library/Developer/CommandLineTools
-           sudo shutdown -r now
-           xcode-select --install
            brew install tcl-tk
            echo 'export PATH="/usr/local/opt/tcl-tk/bin:$PATH"' >> ~/.zshrc
            export LDFLAGS="-L/usr/local/opt/tcl-tk/lib"
@@ -56,7 +53,7 @@ jobs:
            python --version >> py_ver
            sed -i '' "s/Python //g" py_ver
            export PY_VER="$( cat py_ver )"
-           pyenv uninstall $PY_VER
+           CC="$(brew --prefix gcc)/bin/gcc-11" PYTHON_BUILD_HOMEBREW_OPENSSL_FORMULA="openssl@3" pyenv uninstall $PY_VER
            env \
            PATH="$(brew --prefix tcl-tk)/bin:$PATH" \
            LDFLAGS="-L$(brew --prefix tcl-tk)/lib" \
@@ -64,8 +61,8 @@ jobs:
            PKG_CONFIG_PATH="$(brew --prefix tcl-tk)/lib/pkgconfig" \
            CFLAGS="-I$(brew --prefix tcl-tk)/include" \
            PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I$(brew --prefix tcl-tk)/include' --with-tcltk-libs='-L$(brew --prefix tcl-tk)/lib -ltcl8.6 -ltk8.6'" \
-           pyenv install $PY_VER
-           pyenv global $PY_VER
+           CC="$(brew --prefix gcc)/bin/gcc-11" PYTHON_BUILD_HOMEBREW_OPENSSL_FORMULA="openssl@3" pyenv install $PY_VER
+           CC="$(brew --prefix gcc)/bin/gcc-11" PYTHON_BUILD_HOMEBREW_OPENSSL_FORMULA="openssl@3" pyenv global $PY_VER
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
