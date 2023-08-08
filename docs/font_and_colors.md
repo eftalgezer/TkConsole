@@ -7,7 +7,8 @@ TkConsole allows you to customize the font and colors of the console widget to m
 The `font` parameter lets you specify the font to be used for the console's text. You can provide a font family and size to create the desired appearance.
 
 ```python
-console = Console(root, font=("Arial", 12))
+import tkinter.font as tkFont
+console = Console(root, font=tkFont.Font(family="Arial", size=12))
 ```
 
 ## Background and Foreground Colors
