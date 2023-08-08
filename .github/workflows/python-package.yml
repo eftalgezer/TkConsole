@@ -41,7 +41,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install python3-tk
         sudo apt-get install -y xvfb
-    - name: Install dependencies (macOS, except with Python 3.11)
+    - name: Install dependencies (macOS, except with Python 3.11 and 3.12)
       if: "startsWith(matrix.os, 'macos') && !(matrix.python-version == '3.11') && !(matrix.python-version == '3.12-dev')"
       run: |
            brew update
