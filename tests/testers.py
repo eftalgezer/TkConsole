@@ -42,7 +42,8 @@ class ConsoleTest(unittest.TestCase):
         Returns:
             None
         """
-        os.system('Xvfb :1 -screen 0 1600x1200x16  &')
+        if os.name != "nt":
+            os.system('Xvfb :1 -screen 0 1600x1200x16  &')
         os.environ["DISPLAY"] = ":1.0"
         root = tk.Tk()
         self.console = Console(root)
