@@ -28,7 +28,7 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-        cache: 'pip'
+        # cache: 'pip'
     - name: Install dependencies (all)
       run: |
         pip install setuptools --upgrade
@@ -103,4 +103,7 @@ jobs:
             LATEST_VERSION="$(curl -Ls https://artifacts.codacy.com/bin/codacy-coverage-reporter/latest)"
             curl -Ls -o codacy-coverage-reporter-assembly.jar "https://artifacts.codacy.com/bin/codacy-coverage-reporter/${LATEST_VERSION}/codacy-coverage-reporter-assembly.jar"
             java -jar codacy-coverage-reporter-assembly.jar report -r coverage.xml
+    - name: See requirements
+      run: |
+            pip freeze
 
