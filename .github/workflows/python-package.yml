@@ -49,8 +49,11 @@ jobs:
            export LDFLAGS="-L/usr/local/opt/tcl-tk/lib"
            export CPPFLAGS="-I/usr/local/opt/tcl-tk/include"
            export PKG_CONFIG_PATH="/usr/local/opt/tcl-tk/lib/pkgconfig"
+           python --version >> py_ver
+           sed -i '' "s/Python //g" py_ver
+           export PY_VER = cat py_ver
            brew install pyenv
-           pyenv uninstall matrix.python-version
+           pyenv uninstall $PY_VER
            env \
            PATH="$(brew --prefix tcl-tk)/bin:$PATH" \
            LDFLAGS="-L$(brew --prefix tcl-tk)/lib" \
@@ -58,8 +61,8 @@ jobs:
            PKG_CONFIG_PATH="$(brew --prefix tcl-tk)/lib/pkgconfig" \
            CFLAGS="-I$(brew --prefix tcl-tk)/include" \
            PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I$(brew --prefix tcl-tk)/include' --with-tcltk-libs='-L$(brew --prefix tcl-tk)/lib -ltcl8.6 -ltk8.6'" \
-           pyenv install matrix.python-version
-           pyenv global matrix.python-version
+           pyenv install $PY_VER
+           pyenv global $PY_VER
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
