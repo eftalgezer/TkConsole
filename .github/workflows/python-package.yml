@@ -83,7 +83,7 @@ jobs:
                 echo "$line; python_version==${pyver%-*} and platform_system==${osname%-*}"
             done < tree.txt
     - name: See requirements (Windows)
-      if: "!startsWith(matrix.os, 'windows')"
+      if: "startsWith(matrix.os, 'windows')"
       run: |
             pipdeptree -fl > tree.txt
             set osname='${{ matrix.os }}'
