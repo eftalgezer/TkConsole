@@ -73,24 +73,6 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
-    - name: See requirements (others)
-      if: "!startsWith(matrix.os, 'windows')"
-      run: |
-            pipdeptree -fl > tree.txt
-            osname='${{ matrix.os }}'
-            pyver='${{ matrix.python-version }}'
-            while IFS= read -r line; do
-                echo "$line; python_version==${pyver%-*} and platform_system==${osname%-*}"
-            done < tree.txt
-    - name: See requirements (Windows)
-      if: "startsWith(matrix.os, 'windows')"
-      run: |
-            pipdeptree -fl > tree.txt
-            set osname='${{ matrix.os }}'
-            set pyver='${{ matrix.python-version }}'
-            for (/f "usebackq delims=" %%i in ("tree.txt")) {
-                echo %%i; python_version==$pyver.Split("-")[0] and platform_system==$osname.Split("-")[0]
-            }
     - name: Generate Report
       run: |
         pip install codecov
