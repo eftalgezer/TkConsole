@@ -1,0 +1,87 @@
+name: Check requirements
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12-dev"]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+    - name: Install dependencies (all)
+      run: |
+        pip install setuptools --upgrade
+        pip install --upgrade pip
+        python -m pip install --upgrade pip
+        python -m pip install flake8 pytest
+    - name: Install dependencies (Ubuntu)
+      if: "startsWith(matrix.os, 'ubuntu')"
+      run: |
+        sudo apt-get update
+        sudo apt-get install python3-tk
+        sudo apt-get install -y xvfb
+    - name: Install dependencies (macOS, except with Python 3.11 and 3.12)
+      if: "startsWith(matrix.os, 'macos') && !(matrix.python-version == '3.11') && !(matrix.python-version == '3.12-dev')"
+      run: |
+           brew update
+           brew install tcl-tk
+           echo 'export PATH="/usr/local/opt/tcl-tk/bin:$PATH"' >> ~/.zshrc
+           export LDFLAGS="-L/usr/local/opt/tcl-tk/lib"
+           export CPPFLAGS="-I/usr/local/opt/tcl-tk/include"
+           export PKG_CONFIG_PATH="/usr/local/opt/tcl-tk/lib/pkgconfig"
+           brew install pyenv --head
+           python --version >> py_ver
+           sed -i '' "s/Python //g" py_ver
+           export PY_VER="$( cat py_ver )"
+           env \
+           PATH="$(brew --prefix tcl-tk)/bin:$PATH" \
+           LDFLAGS="-L$(brew --prefix tcl-tk)/lib" \
+           CPPFLAGS="-I$(brew --prefix tcl-tk)/include" \
+           PKG_CONFIG_PATH="$(brew --prefix tcl-tk)/lib/pkgconfig" \
+           CFLAGS="-I$(brew --prefix tcl-tk)/include" \
+           PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I$(brew --prefix tcl-tk)/include' --with-tcltk-libs='-L$(brew --prefix tcl-tk)/lib -ltcl8.6 -ltk8.6'" \
+           pyenv install $PY_VER
+           pyenv global $PY_VER
+    - name: Install repository
+      run: |
+            pip install .
+    - name: Check if requirements changed (others)
+      if: "!(startsWith(matrix.os, 'windows'))"
+      run: |
+            pip freeze > new_requirements.txt
+            grep -Ff new_requirements.txt requirements.txt > diff.txt
+            DIFF=$(diff diff.txt requirements.txt)
+            if [ "$DIFF" != "" ] 
+            then
+                cat diff.txt
+                exit 1
+            fi
+    - name: Check if requirements changed (Windows)
+      if: "!startsWith(matrix.os, 'windows'))"
+      run: |
+            @echo off
+            pip freeze > new_requirements.txt
+            findstr /g:new_requirements.txt requirements.txt > diff.txt
+            fc /w diff.txt requirements.txt > nul
+            if %errorlevel% neq 0 (
+                type diff.txt
+                exit /b 1
+            )
+            
