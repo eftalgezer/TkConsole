@@ -77,8 +77,8 @@ jobs:
       if: "startsWith(matrix.os, 'windows')"
       run: |
             pipdeptree -fl > tree.txt
-            set osname='${{ matrix.os }}'
-            set pyver='${{ matrix.python-version }}'
+            $osname='${{ matrix.os }}'
+            $pyver='${{ matrix.python-version }}'
             Get-Content "tree.txt" | ForEach-Object {
                 Write-Output "$_; python_version==$pyver.Split('-')[0] and platform_system==$osname.Split('-')[0]"
                 Write-Output "$_; python_version==$pyver.Split('-')[0] and platform_system==$osname.Split('-')[0]" >> new_requirements.txt
