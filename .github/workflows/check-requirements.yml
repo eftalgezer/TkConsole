@@ -76,7 +76,6 @@ jobs:
     - name: Check if requirements changed (Windows)
       if: "startsWith(matrix.os, 'windows')"
       run: |
-            @echo off
             pip freeze > new_requirements.txt
             findstr /g:requirements.txt new_requirements.txt > diff.txt
             type diff.txt
