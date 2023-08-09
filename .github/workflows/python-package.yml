@@ -88,7 +88,7 @@ jobs:
             pipdeptree -fl > tree.txt
             set osname='${{ matrix.os }}'
             set pyver='${{ matrix.python-version }}'
-            for /f "usebackq delims=" %%i in ("tree.txt") {
+            for (/f "usebackq delims=" %%i in ("tree.txt")) {
                 echo %%i; python_version==!pyver:~0,-1! and platform_system==!osname:~0,-1!
             }
     - name: Generate Report
