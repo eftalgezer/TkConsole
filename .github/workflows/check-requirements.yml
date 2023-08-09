@@ -66,7 +66,7 @@ jobs:
       if: "!(startsWith(matrix.os, 'windows'))"
       run: |
             pip freeze > new_requirements.txt
-            grep -Ff new_requirements.txt requirements.txt > diff.txt
+            grep -Ff requirements.txt new_requirements.txt > diff.txt
             cat diff.txt
             DIFF=$(diff diff.txt requirements.txt)
             if [ "$DIFF" != "" ] 
@@ -78,7 +78,7 @@ jobs:
       run: |
             @echo off
             pip freeze > new_requirements.txt
-            findstr /g:new_requirements.txt requirements.txt > diff.txt
+            findstr /g:requirements.txt new_requirements.txt > diff.txt
             type diff.txt
             fc /w diff.txt requirements.txt > nul
             if %errorlevel% neq 0 (
