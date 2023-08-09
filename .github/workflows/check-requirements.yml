@@ -66,7 +66,15 @@ jobs:
       if: "!(startsWith(matrix.os, 'windows'))"
       run: |
             pip freeze > new_requirements.txt
-            join -1 1 -2 1 <(tr ',' ' ' < new_requirements.txt | sort) <(sort requirements.txt) | cut -d' ' -f2 > diff.txt
+            echo "with open('new_requirements.txt', 'r') as read1:" > diff.py
+            echo "  f1 = read1.read().split()" >> diff.py
+            echo "with open('requirements.txt', 'r') as read2:" >> diff.py
+            echo "  f2 = read2.read().split()" >> diff.py
+            echo "with open('diff.txt', 'w+') as write1:" >> diff.py
+            echo "  for line in f2:" >> diff.py
+            echo "    if line in f1:" >> diff.py
+            echo "      write1.write(line + '\n')" >> diff.py
+            python diff.py
             cat diff.txt
             DIFF=$(diff diff.txt requirements.txt)
             if [ "$DIFF" != "" ] 
@@ -77,10 +85,21 @@ jobs:
       if: "startsWith(matrix.os, 'windows')"
       run: |
             pip freeze > new_requirements.txt
-            findstr /g:new_requirements.txt requirements.txt > diff.txt
+            (
+                echo with open('new_requirements.txt', 'r') as read1:
+                echo   f1 = read1.read().split()
+                echo with open('requirements.txt', 'r') as read2:
+                echo   f2 = read2.read().split()
+                echo with open('diff.txt', 'w+') as write1:
+                echo   for line in f2:
+                echo     if line in f1:
+                echo       write1.write(line + '^M')
+            ) > diff.py
+            python diff.py
             type diff.txt
-            fc /w diff.txt requirements.txt > nul
-            if (%errorlevel% neq 0) {
-                exit /b 1
-            }
+            fc /b diff.txt requirements.txt > nul
+            if errorlevel 1 (
+                exit 1
+            )
+
             
