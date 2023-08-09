@@ -89,7 +89,7 @@ jobs:
             set osname='${{ matrix.os }}'
             set pyver='${{ matrix.python-version }}'
             for (/f "usebackq delims=" %%i in ("tree.txt")) {
-                echo %%i; python_version==!pyver:~0,-1! and platform_system==!osname:~0,-1!
+                echo %%i; python_version==$pyver.Split("-")[0] and platform_system==$osname.Split("-")[0]
             }
     - name: Generate Report
       run: |
