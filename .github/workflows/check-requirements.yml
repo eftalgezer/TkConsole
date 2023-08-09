@@ -62,44 +62,17 @@ jobs:
     - name: Install repository
       run: |
             pip install .
-    - name: Check if requirements changed (others)
-      if: "!(startsWith(matrix.os, 'windows'))"
+    - name: Check if requirements changed
       run: |
             pip freeze > new_requirements.txt
-            echo "with open('requirements.txt', 'r') as read1:" > diff.py
-            echo "  f1 = read1.read().split()" >> diff.py
+            echo "requirements = None" > diff.py
+            echo "new_requirements = None" >> diff.py
+            echo "with open('requirements.txt', 'r') as read1:" >> diff.py
+            echo "    requirements = read1.readlines()" >> diff.py
             echo "with open('new_requirements.txt', 'r') as read2:" >> diff.py
-            echo "  f2 = read2.read().split()" >> diff.py
-            echo "with open('diff.txt', 'w+') as write1:" >> diff.py
-            echo "  for line in f2:" >> diff.py
-            echo "    if line in f1:" >> diff.py
-            echo "      write1.write(line + '\n')" >> diff.py
+            echo "    new_requirements = read2.readlines()" >> diff.py
+            echo "diff = [new_requirement for new_requirement in new_requirements if new_requirement not in requirements]" >> diff.py
+            echo "print(diff)" >> diff.py
+            echo "if len(diff) != 0:" >> diff.py
+            echo "    raise Exception()" >> diff.py
             python diff.py
-            cat diff.txt
-            DIFF=$(diff diff.txt requirements.txt)
-            if [ "$DIFF" != "" ] 
-            then
-                exit 1
-            fi
-    - name: Check if requirements changed (Windows)
-      if: "startsWith(matrix.os, 'windows')"
-      run: |
-            pip freeze > new_requirements.txt
-            (
-                echo with open('requirements.txt', 'r') as read1:
-                echo   f1 = read1.read().split()
-                echo with open('new_requirements.txt', 'r') as read2:
-                echo   f2 = read2.read().split()
-                echo with open('diff.txt', 'w+') as write1:
-                echo   for line in f2:
-                echo     if line in f1:
-                echo       write1.write(line + '^M')
-            ) > diff.py
-            python diff.py
-            type diff.txt
-            fc /b diff.txt requirements.txt > nul
-            if errorlevel 1 (
-                exit 1
-            )
-
-            
