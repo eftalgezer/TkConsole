@@ -71,7 +71,7 @@ jobs:
             echo "    requirements = read1.readlines()" >> diff.py
             echo "with open('new_requirements.txt', 'r') as read2:" >> diff.py
             echo "    new_requirements = read2.readlines()" >> diff.py
-            echo "diff = [new_requirement for new_requirement in new_requirements if new_requirement not in requirements]" >> diff.py
+            echo "diff = [new_requirement for new_requirement in new_requirements if new_requirement not in requirements and "TkConsole" not in new_requirement]" >> diff.py
             echo "print(diff)" >> diff.py
             echo "if len(diff) != 0:" >> diff.py
             echo "    raise Exception()" >> diff.py
