@@ -67,10 +67,10 @@ jobs:
       run: |
             pip freeze > new_requirements.txt
             grep -Ff new_requirements.txt requirements.txt > diff.txt
+            cat diff.txt
             DIFF=$(diff diff.txt requirements.txt)
             if [ "$DIFF" != "" ] 
             then
-                cat diff.txt
                 exit 1
             fi
     - name: Check if requirements changed (Windows)
@@ -79,9 +79,9 @@ jobs:
             @echo off
             pip freeze > new_requirements.txt
             findstr /g:new_requirements.txt requirements.txt > diff.txt
+            type diff.txt
             fc /w diff.txt requirements.txt > nul
             if %errorlevel% neq 0 (
-                type diff.txt
                 exit /b 1
             )
             
