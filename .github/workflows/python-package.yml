@@ -75,7 +75,9 @@ jobs:
         pytest
     - name: See requirements
       run: |
-            pipdeptree -fl
+            while IFS= read -r line; do
+                echo "$line; python_version==matrix.python-version and platform_system==${$( matrix.os )%-*}"
+            done < pipdeptree -fl
     - name: Generate Report
       run: |
         pip install codecov
