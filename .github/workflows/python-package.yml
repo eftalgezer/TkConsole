@@ -76,8 +76,9 @@ jobs:
     - name: See requirements
       run: |
             pipdeptree -fl > tree.txt
+            osname='$(${{ matrix.os }})'
             while IFS= read -r line; do
-                echo "$line; python_version==${{ matrix.python-version }} and platform_system==${'$(${{ matrix.os }})'%-*}"
+                echo "$line; python_version==${{ matrix.python-version }} and platform_system==${osname%-*}"
             done < tree.txt
     - name: Generate Report
       run: |
