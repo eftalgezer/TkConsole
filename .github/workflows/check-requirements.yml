@@ -1,9 +1,10 @@
 name: Check requirements
 on:
-  push:
+  workflow_run:
+    workflows: ["Python package"]
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    types: 
+        - completed
 
 permissions:
   contents: read
@@ -15,8 +16,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12-dev"]
+        os: ["ubuntu-latest", "macos-latest", "macos-13", "windows-latest"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13-dev"]
+        exclude:
+        - os: "macos-latest"
+          python-version: "3.7"
 
     steps:
     - uses: actions/checkout@v4
@@ -25,75 +29,29 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
-    - name: Install dependencies (all)
+    - name: Install dependencies
       run: |
         pip install setuptools --upgrade
         pip install --upgrade pip
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest
+        python -m pip install dummy_package_manager
         python -m pip install pipdeptree
-    - name: Install dependencies (Ubuntu)
-      if: "startsWith(matrix.os, 'ubuntu')"
+    - name: Install dependencies (Python 3.13)
+      if: "startsWith(matrix.python-version, '3.13')"
       run: |
-        sudo apt-get update
-        sudo apt-get install python3-tk
-        sudo apt-get install -y xvfb
-    - name: Install dependencies (macOS, except with Python 3.11 and 3.12)
-      if: "startsWith(matrix.os, 'macos') && !(matrix.python-version == '3.11') && !(matrix.python-version == '3.12-dev')"
-      run: |
-           brew update
-           brew install tcl-tk
-           echo 'export PATH="/usr/local/opt/tcl-tk/bin:$PATH"' >> ~/.zshrc
-           export LDFLAGS="-L/usr/local/opt/tcl-tk/lib"
-           export CPPFLAGS="-I/usr/local/opt/tcl-tk/include"
-           export PKG_CONFIG_PATH="/usr/local/opt/tcl-tk/lib/pkgconfig"
-           brew install pyenv --head
-           python --version >> py_ver
-           sed -i '' "s/Python //g" py_ver
-           export PY_VER="$( cat py_ver )"
-           env \
-           PATH="$(brew --prefix tcl-tk)/bin:$PATH" \
-           LDFLAGS="-L$(brew --prefix tcl-tk)/lib" \
-           CPPFLAGS="-I$(brew --prefix tcl-tk)/include" \
-           PKG_CONFIG_PATH="$(brew --prefix tcl-tk)/lib/pkgconfig" \
-           CFLAGS="-I$(brew --prefix tcl-tk)/include" \
-           PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I$(brew --prefix tcl-tk)/include' --with-tcltk-libs='-L$(brew --prefix tcl-tk)/lib -ltcl8.6 -ltk8.6'" \
-           pyenv install $PY_VER
-           pyenv global $PY_VER
+            pip install https://github.com/python-cffi/cffi/archive/refs/heads/main.zip
     - name: Install repository
       run: |
             pip install .
-    - name: See and write requirements (others)
-      if: "!startsWith(matrix.os, 'windows')"
+    - name: See requirements
       run: |
-            pipdeptree -fl > tree.txt
-            osname='${{ matrix.os }}'
-            pyver='${{ matrix.python-version }}'
-            while IFS= read -r line; do
-                echo "$line; python_version==${pyver%-*} and platform_system==${osname%-*}"
-                echo "$line; python_version==${pyver%-*} and platform_system==${osname%-*}" >> new_requirements.txt
-            done < tree.txt
-    - name: See and write requirements (Windows)
-      if: "startsWith(matrix.os, 'windows')"
+            check_requirements -l -wi python_version sys_platform
+    - name: Check missing requirements
+      if: always()
       run: |
-            pipdeptree -fl > tree.txt
-            $osname='${{ matrix.os }}'
-            $pyver='${{ matrix.python-version }}'
-            Get-Content "tree.txt" | ForEach-Object {
-                Write-Output "$_; python_version==$pyver.Split('-')[0] and platform_system==$osname.Split('-')[0]"
-                Write-Output "$_; python_version==$pyver.Split('-')[0] and platform_system==$osname.Split('-')[0]" >> new_requirements.txt
-            }
-    - name: Check if requirements changed
+            check_requirements -cm -f requirements.txt -rme -ip "check-requirements"
+    - name: Check extra requirements
+      if: always()
       run: |
-            pip freeze > new_requirements.txt
-            echo "requirements = None" > diff.py
-            echo "new_requirements = None" >> diff.py
-            echo "with open('requirements.txt', 'r') as read1:" >> diff.py
-            echo "    requirements = read1.readlines()" >> diff.py
-            echo "with open('new_requirements.txt', 'r') as read2:" >> diff.py
-            echo "    new_requirements = read2.readlines()" >> diff.py
-            echo "diff = [new_requirement for new_requirement in new_requirements if new_requirement not in requirements and 'TkConsole' not in new_requirement and 'pipdeptree' not in new_requirement]" >> diff.py
-            echo "print(diff)" >> diff.py
-            echo "if len(diff) != 0:" >> diff.py
-            echo "    raise Exception()" >> diff.py
-            python diff.py
+            check_requirements -ce -f requirements.txt -ree -ip "check-requirements"
